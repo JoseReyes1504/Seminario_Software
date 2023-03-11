@@ -1,21 +1,22 @@
 import express from 'express';
-
 const router = express.Router();
+import { IUsuarios } from '@server/dao/models/Usuarios/IUsuarios';
+import { UsuariosDao } from '@server/dao/models/Usuarios/UsuariosDao';
+import { MongoDBConn } from '@server/dao/MongoDBConn';
+import { Usuarios } from '@server/libs/usuarios/usuarios';
 
-import { IUsuarios, Usuarios } from '@server/libs/usuarios/usuarios';
+const usuariosDao = new UsuariosDao(MongoDBConn);
 
-
-const ModeloUsuario = new Usuarios();
-
-ModeloUsuario.add({
-    codigo: '',
-    correo: 'eduardo.reyessuazo@gmail.com',
-    nombre: 'José Eduardo Reyes Suazo',
-    password: 'eduardo12345',
-    roles: 'Administrador',
-    creado: undefined,
-    ultimoAcceso: undefined
+let ModeloUsuario:Usuarios;
+usuariosDao.init().then(() =>{
+    ModeloUsuario = new Usuarios(usuariosDao);
+})
+  
+  
+router.get('/all', async (_req, res) =>{
+    res.status(200).json(await ModeloUsuario.getAll());
 });
+
 //Registrar los endpoint en router 
 router.get('/', (_req, res) =>{
     const jsonUrls = {
@@ -28,13 +29,7 @@ router.get('/', (_req, res) =>{
     res.status(200).json(jsonUrls);
 });
 
-
-router.get('/all', (_req, res) =>{
-    res.status(200).json(ModeloUsuario.getAll());
-});
-
-
-router.post('/new', (req, res) =>{
+router.post('/new', async (req, res) =>{
     const {correo, nombre, password, roles } = req.body;
     const newUsuario:IUsuarios ={
         codigo: '',
@@ -43,7 +38,7 @@ router.post('/new', (req, res) =>{
         password: password,
         roles: roles
     }
-    if(ModeloUsuario.add(newUsuario)){
+    if(await ModeloUsuario.add(newUsuario)){
         return res.status(200).json({"created": true});    
     }
     return res.status(404).json({
@@ -52,10 +47,19 @@ router.post('/new', (req, res) =>{
 });
 
 
-router.put('/upd/:id', (req, res) =>{
+router.put('/upd/:id', async (req, res) =>{
     const { id }  = req.params;
-    const {correo, nombre, password, roles } = req.body;
+    const {
+        correo = "---NotRecieved---",
+        nombre = "---NotRecieved---",
+        password = "", 
+        roles= ""
+    } = req.body;
     
+    if(nombre === "---NotRecieved---" || correo === "---NotRecieved---" ){
+        return res.status(403).json({"error":"Debe venir el nombre y correo correctos"});
+    }
+
     const UpdateUsuario: IUsuarios = {
         codigo: id,
         correo,
@@ -64,10 +68,10 @@ router.put('/upd/:id', (req, res) =>{
         roles
     }
 
-    if(ModeloUsuario.update(UpdateUsuario)){
+    if(await ModeloUsuario.update(id, UpdateUsuario)){
         return res.status(200).json({"Update": true});
     }
-    return res.status(404).json({"Error": "Error Actualizar"});
+    return res.status(404).json({"Error": "Error Actualizar Usuario"});
 });
 
 export default router;

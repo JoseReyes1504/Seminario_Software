@@ -1,43 +1,38 @@
-export interface IUsuarios{
-    codigo:string,
-    correo:string, 
-    nombre:string, 
-    password: string,
-    roles: string,
-    creado?: Date,
-    ultimoAcceso?: Date
-}
+import { IUsuarios } from "@server/dao/models/Usuarios/IUsuarios";
+import { IDataAccessObject } from "@server/dao/IDataAccessObject";
 
-export class Usuarios{
-    private usuarios: IUsuarios[];
 
-    constructor(){
-        this.usuarios = [];
+export class Usuarios {
+    private dao: IDataAccessObject;
+    constructor(dao: IDataAccessObject) {
+        this.dao = dao;
     }
 
-    add(NuevoUsuario: IUsuarios){
+    getAll() {
+        return this.dao.findAll();
+    }
+
+    getById(id: string) {
+        return this.dao.findByID(id);
+    }
+
+    add(NuevoUsuario: IUsuarios) {
         const nuevo: IUsuarios = {
             ...NuevoUsuario,
-            codigo: (Math.random()*1000).toString()+new Date().getTime().toString(),
+            codigo: (Math.random() * 1000).toString() + new Date().getTime().toString(),
             creado: new Date(),
             ultimoAcceso: new Date(),
         }
-        this.usuarios.push(nuevo);
-        return true;
+        return this.dao.create(nuevo);
     }
 
-    getAll(){
-        return this.usuarios;
+    update(id: string, updateUsuario: IUsuarios) {
+        const updateObject = { ...updateUsuario, creado: new Date() };
+
+        return this.dao.update(id, updateObject);
     }
 
-    update(updateUsuario: IUsuarios){
-        const newUsuario: IUsuarios[] = this.usuarios.map((user) =>{
-            if(user.codigo === updateUsuario.codigo){
-                return {...user, ...updateUsuario};
-            }
-            return user;
-        });
-        this.usuarios = newUsuario;
-        return true;
+    delete(id: string){
+        return this.dao.delete(id);
     }
 }
