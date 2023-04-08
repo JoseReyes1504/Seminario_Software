@@ -28,7 +28,7 @@ router.post('/signon', async (req, res)=>{
     return res.status(200).json({token});
   } catch (error) {
     console.error("/signin error", error);
-    return res.status(505).json({error: "Error to signon user"});
+    return res.status(505).json({error: "error al intentar iniciar sesión con el usuario"});
   }
 });
 

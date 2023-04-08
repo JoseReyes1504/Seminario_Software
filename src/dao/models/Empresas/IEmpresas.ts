@@ -1,7 +1,8 @@
 export interface IEmpresa {
-  codigo: string;
+  codigo?: string;
   nombre: string;
-  status: string;
+  status?: string;
+  tipo?: number;
   created?: Date;
   updated?: Date;
   observacion?: string;

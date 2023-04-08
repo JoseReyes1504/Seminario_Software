@@ -1,21 +1,7 @@
 import express from 'express';
-const router  = express.Router();
-
+import { validateJwtMiddleWare } from './middlewares/jwtTokenValidator';
 import {validateKeyMiddleWare} from './middlewares/apikeyValidator';
-//import {validateJwtMiddleWare} from './middlewares/jwtTokenValidator';
-
-
-// REST API
-// Internet  ->  HTTP  ->  REST API JSON ->  DB
-// SOAP XML wsdl
-// {} -> JSON
-// [] -> JSON
-// { llave : valor }
-// valor: texto, numérico, booleano, array [valores], objeto {llave:valor}
-
-// REST stateless, resource unique representation
-// CRUD Create, Read, Update, Delete
-//      POST, GET, PUT, DELETE
+const router  = express.Router();
 
 // http://localhost:3001
 router.get('/', (_req, res) => {
@@ -32,15 +18,18 @@ router.get('/version', (_req, res)=>{
 
 import securityRoutes from './security/security';
 // Aplicar Middlewares
-router.use('/security', securityRoutes);
+router.use('/security', validateKeyMiddleWare, securityRoutes);
+
 import empresasRouter from './empresas/empresas';
-router.use('/empresas', validateKeyMiddleWare, empresasRouter);
+router.use('/empresas', validateKeyMiddleWare, validateJwtMiddleWare, empresasRouter);
+
+import fodaRouter  from './foda/fodaEntry';
+router.use('/FodaEntrys', validateKeyMiddleWare, validateJwtMiddleWare, fodaRouter);
+
 
 import usuariosRouter from './usuarios/usuarios';
-router.use('/usuarios',validateKeyMiddleWare, usuariosRouter);
+router.use('/usuarios',validateKeyMiddleWare, validateJwtMiddleWare ,usuariosRouter);
 
-import fodaRouter from './foda/foda';
-router.use('/foda', validateKeyMiddleWare, fodaRouter);
- //router.get  router.post router.put router.delete  router.use
+router.use('/foda', validateKeyMiddleWare, validateJwtMiddleWare, fodaRouter);
 
 export default router;

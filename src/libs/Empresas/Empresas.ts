@@ -9,6 +9,7 @@ export class Empresas {
   getAll() {
     return this.dao.findAll();
   }
+
   getById(id: string) {
     return this.dao.findByID(id);
   }
@@ -22,7 +23,7 @@ export class Empresas {
     return this.dao.create(nueva);
   }
 
-  update(id: string, updateEmpresa: IEmpresa) {
+  update(id: any, updateEmpresa: IEmpresa) {
     const updateObject = { ...updateEmpresa, updated: new Date() };
     return this.dao.update(id, updateObject);
   }

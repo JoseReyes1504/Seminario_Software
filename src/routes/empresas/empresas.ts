@@ -29,27 +29,29 @@ router.get('/all', async (_req, res) => {
   res.status(200).json(await empresasModel.getAll());
 });
 
-router.get('/byid/:id', async (req, res)=>{
-  const {id: codigo} = req.params;
-  const empresa = await empresasModel.getById(codigo);
-  if(empresa){
-    return res.status(200).json(empresa);
-  }
-  return res.status(404).json({"error":"No se encontró Empresa"});
-});
+// router.get('/byid/', async (req, res)=>{
+//   const { id } = req.query;
+//   const empresa = await empresasModel.getById(id);
+//   if(empresa){
+//     return res.status(200).json(empresa);
+//   }
+//   return res.status(404).json({"error":"No se encontró Empresa"});
+// });
 
 router.post('/new', async (req, res) => {
   console.log("Empresas /new request body:", req.body);
   const {
     codigo = "NA",
     nombre ="John Doe Corp",
-    status = "Activo"
+    status = "Activo",
+    tipo = 1
   } = req.body;
   //TODO: Validar Entrada de datos
   const newEmpresa: IEmpresa = {
     codigo,
     nombre,
-    status
+    status,
+    tipo
   };
   if (await empresasModel.add(newEmpresa)) {
     return res.status(200).json({"created": true});
@@ -59,26 +61,17 @@ router.post('/new', async (req, res) => {
   );
 });
 
-router.put('/upd/:id', async (req, res) => {
-  const { id } = req.params;
+router.put('/updEmp/', async (req, res) => {
+  const { id } = req.query;
   const {
     nombre="----NotRecieved------",
-    status="----NotRecieved------",
-    observacion = "",
-    codigo = "",
   } = req.body;
 
-  if (
-    nombre === "----NotRecieved------"
-    || status === "----NotRecieved------"
-  ) {
-    return res.status(403).json({"error":"Debe venir el nombre y status correctos"});
+  if (nombre === "----NotRecieved------"){
+    return res.status(403).json({"error":"Debe venir el nombre correcto"});
   }
   const UpdateEmpresa : IEmpresa = {
-    codigo,
     nombre,
-    status,
-    observacion
   };
 
   if (await empresasModel.update(id, UpdateEmpresa)) {
