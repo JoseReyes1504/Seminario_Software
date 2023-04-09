@@ -8,10 +8,11 @@ export class Users {
   constructor(user: IDataAccessObject) {
     this.userDao = user as UserDao;
   }
-  public async newUser(email: string, password: string) {
+  public async newUser(email: string, password: string, user: string) {
     try {
       const newUser = {
         email,
+        user,
         password: Security.encodePassword(password),
         pswdExpires: new Date(new Date().getTime()+(3 * 30 * 24 * 60 * 60 * 1000))
       };

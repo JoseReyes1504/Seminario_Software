@@ -26,6 +26,9 @@ router.use('/empresas', validateKeyMiddleWare, validateJwtMiddleWare, empresasRo
 import fodaRouter  from './foda/fodaEntry';
 router.use('/FodaEntrys', validateKeyMiddleWare, validateJwtMiddleWare, fodaRouter);
 
+import Foda  from './foda/foda';
+router.use('/Foda', validateKeyMiddleWare, validateJwtMiddleWare, Foda);
+
 
 import usuariosRouter from './usuarios/usuarios';
 router.use('/usuarios',validateKeyMiddleWare, validateJwtMiddleWare ,usuariosRouter);

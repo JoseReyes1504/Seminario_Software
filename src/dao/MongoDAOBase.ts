@@ -29,10 +29,12 @@ export abstract class MongoDAOBase<T> implements IDataAccessObject {
   findAll() {
     return this.collection.find({}).toArray();
   }
+  
   findByID(id: string, options: FindOptions<T> = {}) {
     const _id: Filter<T> = new ObjectId(id) as Filter<T>;
     return this.collection.findOne({ _id }, options);
   }
+  
   create(newEntity: Partial<T>) {
     return this.collection.insertOne(newEntity as OptionalUnlessRequiredId<T>);
   }
@@ -45,12 +47,15 @@ export abstract class MongoDAOBase<T> implements IDataAccessObject {
     const _id = new ObjectId(id) as Filter<T>;
     return this.collection.deleteOne({ _id });
   }
+  
   findByFilter(filter: Filter<T>, options: FindOptions<T> = {},) {
     return this.collection.find(filter, options).toArray();
   }
+
   findOneByFilter(filter: Filter<T>, options: FindOptions<T> = {},) {
     return this.collection.findOne(filter, options);
   }
+
   aggregate(stages: Document[], options: AggregateOptions) {
     return this.collection.aggregate(stages, options).toArray();
   }

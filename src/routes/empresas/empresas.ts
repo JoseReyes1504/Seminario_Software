@@ -44,6 +44,7 @@ router.post('/new', async (req, res) => {
     codigo = "NA",
     nombre ="John Doe Corp",
     status = "Activo",
+    user = "John",
     tipo = 1
   } = req.body;
   //TODO: Validar Entrada de datos
@@ -51,6 +52,7 @@ router.post('/new', async (req, res) => {
     codigo,
     nombre,
     status,
+    user,
     tipo
   };
   if (await empresasModel.add(newEmpresa)) {
@@ -71,7 +73,7 @@ router.put('/updEmp/', async (req, res) => {
     return res.status(403).json({"error":"Debe venir el nombre correcto"});
   }
   const UpdateEmpresa : IEmpresa = {
-    nombre,
+    nombre,    
   };
 
   if (await empresasModel.update(id, UpdateEmpresa)) {

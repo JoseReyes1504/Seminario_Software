@@ -8,6 +8,7 @@ export enum EUserState{
 }
 export interface IUser extends IAuditable{
   _id?: string| ObjectId;
+  user: string;
   email: string;
   password: string;
   state: EUserState;
@@ -19,6 +20,7 @@ export interface IUser extends IAuditable{
 
  export const DefaultUser: IUser = {
    email: "",
+   user: "",
    password: "",
    state: EUserState.ACT,
    roles: ["public"],

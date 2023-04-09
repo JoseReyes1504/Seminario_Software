@@ -17,10 +17,10 @@ FodaDao.init().then(() => {
 router.get('/', (_req, res) => {
     const jsonUrls = {
         "getAll": { "method": "get", "url": "FodaEntrys/all" },
-        "getById": { "method": "get", "url": "FodaEntrys/byid/:id" },
+        "getById": { "method": "get", "url": "FodaEntrys/byid/?id=" },
         "new": { "method": "post", "url": "FodaEntrys/new" },
-        "update": { "method": "put", "url": "FodaEntrys/upd/:id" },
-        "delete": { "method": "delete", "url": "FodaEntrys/del/:id" },
+        "update": { "method": "put", "url": "FodaEntrys/upd/?id=" },
+        "delete": { "method": "delete", "url": "FodaEntrys/del/?id=" },
     };
     res.status(200).json(jsonUrls);
 });
@@ -38,8 +38,7 @@ router.get('/byid/', async (req, res) => {
     return res.status(404).json({ "error": "No se encontró la entidad" });
 });
 
-router.post('/new', async (req, res) => {
-    console.log("Empresas /new request body:", req.body);
+router.post('/new', async (req, res) => {    
     const {
         Codigo= "1204",
         empresa = "1504",
@@ -100,6 +99,6 @@ router.delete('/del/', async (req, res) => {
     if (await FodaModel.delete(id)) {
         return res.status(200).json({ "deleted": true });
     }
-    return res.status(404).json({ "error": "No se pudo eliminar Empresa" });
+    return res.status(404).json({ "error": "No se pudo eliminar la entidad" });
 });
 export default router;
