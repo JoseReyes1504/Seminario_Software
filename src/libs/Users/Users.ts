@@ -14,7 +14,7 @@ export class Users {
         email,
         user,
         password: Security.encodePassword(password),
-        pswdExpires: new Date(new Date().getTime()+(3 * 30 * 24 * 60 * 60 * 1000))
+        pswdExpires: new Date(new Date().getTime() + (3 * 30 * 24 * 60 * 60 * 1000))
       };
       const result = await this.userDao.create(newUser);
       const rt = await this.userDao.findOneByFilter({ _id: result?.insertedId });
@@ -25,23 +25,23 @@ export class Users {
       return null;
     }
   }
-  public async loginUser(email:string, password:string) {
-    try{
+  public async loginUser(email: string, password: string) {
+    try {
       const dbUser = await this.userDao.findOneByFilter(
-        {email},
-        {projection:{_id:1, email:1, password:1, state:1, roles:1, pswdExpires:1, avatar:1}}
+        { email },
+        { projection: { _id: 1, email: 1, user: 1, password: 1, state: 1, roles: 1, pswdExpires: 1, avatar: 1 } }
       );
-      if (Security.verifyPassword(password, dbUser.password)){
+      if (Security.verifyPassword(password, dbUser.password)) {
         delete dbUser.password;
         delete dbUser.pswdExpires;
         delete dbUser.state;
         // JWT
         const token = JWT.singJWT(dbUser);
-        return token;
+        return { "Usuario": dbUser.user, "Token": token };
       }
       console.error("User.loginUser can´t validate password");
       throw new Error("Can´t Validate Credentials");
-    }catch(err){
+    } catch (err) {
       console.error(err);
       throw new Error("Can´t Validate Credentials");
     }

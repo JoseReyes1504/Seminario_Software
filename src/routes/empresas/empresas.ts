@@ -25,31 +25,22 @@ router.get('/', (_req, res)=>{
   res.status(200).json(jsonUrls);
 });
 
-router.get('/all', async (_req, res) => {
-  res.status(200).json(await empresasModel.getAll());
+router.get('/all/:user', async (req, res) => {
+  const { user } = req.params;
+  res.status(200).json(await empresasModel.getAll(user));
 });
 
-// router.get('/byid/', async (req, res)=>{
-//   const { id } = req.query;
-//   const empresa = await empresasModel.getById(id);
-//   if(empresa){
-//     return res.status(200).json(empresa);
-//   }
-//   return res.status(404).json({"error":"No se encontró Empresa"});
-// });
 
 router.post('/new', async (req, res) => {
-  console.log("Empresas /new request body:", req.body);
-  const {
-    codigo = "NA",
+  // console.log("Empresas /new request body:", req.body);
+  const {    
     nombre ="John Doe Corp",
     status = "Activo",
     user = "John",
     tipo = 1
   } = req.body;
   //TODO: Validar Entrada de datos
-  const newEmpresa: IEmpresa = {
-    codigo,
+  const newEmpresa: IEmpresa = {    
     nombre,
     status,
     user,
@@ -63,8 +54,9 @@ router.post('/new', async (req, res) => {
   );
 });
 
-router.put('/updEmp/', async (req, res) => {
-  const { id } = req.query;
+
+router.put('/updEmp/:id', async (req, res) => {
+  const { id } = req.params;
   const {
     nombre="----NotRecieved------",
   } = req.body;

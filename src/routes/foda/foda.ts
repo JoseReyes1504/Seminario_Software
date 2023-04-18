@@ -21,10 +21,17 @@ router.get('/fodaEmp/', async (req, res) => {
     return res.status(200).json(fodas);
 });
 
-router.post('/new/', async (req, res) => {    
-    const { id } = req.query;
+router.get('/FodaAll/', async (req, res) => {
+    const { user } = req.query;
+    const fodas = await fodaModel.getAllFoda(user);
+    return res.status(200).json(fodas);
+});
+
+
+router.post('/new/:empresa/:usuario', async (req, res) => {
+    const { empresa, usuario } = req.params;
     const { nombre } = req.body;
-    const result = await fodaModel.newFoda(nombre, id);
+    const result = await fodaModel.newFoda(nombre, empresa, usuario);
     return res.status(200).json(result);
 });
 
@@ -41,12 +48,31 @@ router.put('/:empresa/upd/:fodaId/nombre', async (req, res) => {
     const updObject = await fodaModel.setNombre(fodaId, nombre);
     return res.status(200).json(updObject);
 });
+
 router.put('/:empresa/upd/:fodaId/estado', async (req, res) => {
     const { fodaId } = req.params;
     const { estado } = req.body;
     const updObject = await fodaModel.setEstado(fodaId, estado);
     return res.status(200).json(updObject);
 });
+
+
+router.put('/:type/upd/:fodaId/cnt', async (req, res) => {
+    const { fodaId, type} = req.params;    
+    const updObject = await fodaModel.updateFoda(fodaId, type);
+    return res.status(200).json(updObject);
+});
+
+
+
+router.put('/:type/upd/:fodaId/cntRest', async (req, res) => {
+    const { fodaId, type} = req.params;    
+    const updObject = await fodaModel.updateFodaDisc(fodaId, type);
+    return res.status(200).json(updObject);
+});
+
+
+
 router.put('/:empresa/upd/:fodaId/observacion', async (req, res) => {
     const { fodaId } = req.params;
     const { observacion } = req.body;

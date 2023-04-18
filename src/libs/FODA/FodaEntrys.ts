@@ -8,6 +8,10 @@ export class FodaEntrys {
         this.dao = dao;
     }
 
+    public getAllFodaEntrys(fodaId: any) {
+        return this.dao.findByFilter({ "foda": fodaId });
+    }
+
     getAll() {
         return this.dao.findAll();
     }
@@ -17,12 +21,8 @@ export class FodaEntrys {
     }
 
     add(NuevaEntidad: IFodaEntry) {
-        const gpc = require('generate-pincode')
-        const pin = gpc(4)
-
         const nuevo: IFodaEntry = {
-            ...NuevaEntidad,
-            Codigo: pin,
+            ...NuevaEntidad,            
             observacion: "N/D"
         }
         return this.dao.create(nuevo);

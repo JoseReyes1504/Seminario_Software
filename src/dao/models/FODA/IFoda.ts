@@ -11,9 +11,9 @@ export interface IFoda extends IAuditable {
   _id?: ObjectId | string;
   nombre: string;
   owner: {
-    id: ObjectId | string,
+    id?: ObjectId | string,
     usuario: string,
-    email: string
+    email?: string
   },
   empresa: {
     id: ObjectId | string,

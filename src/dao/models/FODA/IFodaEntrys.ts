@@ -5,9 +5,8 @@ export enum EFodaType {
     "Amenaza" = "A"
 }
 
-export interface IFodaEntry{
-    Codigo?: string;
-    empresa?: string,
+export interface IFodaEntry{    
+    foda?: string,
     descripcion?: string;
     tipo: EFodaType;
     categorias?: string[];

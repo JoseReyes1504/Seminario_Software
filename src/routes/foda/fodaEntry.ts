@@ -17,10 +17,11 @@ FodaDao.init().then(() => {
 router.get('/', (_req, res) => {
     const jsonUrls = {
         "getAll": { "method": "get", "url": "FodaEntrys/all" },
-        "getById": { "method": "get", "url": "FodaEntrys/byid/?id=" },
-        "new": { "method": "post", "url": "FodaEntrys/new" },
-        "update": { "method": "put", "url": "FodaEntrys/upd/?id=" },
-        "delete": { "method": "delete", "url": "FodaEntrys/del/?id=" },
+        "getByIdAll": { "method": "get", "url": "FodaEntrys/allByFoda/:fodaId" },
+        "getById": { "method": "get", "url": "FodaEntrys/byid/:id" },
+        "new": { "method": "post", "url": "FodaEntrys/new/:Foda" },
+        "update": { "method": "put", "url": "FodaEntrys/updType/:id" },
+        "delete": { "method": "delete", "url": "FodaEntrys/del/:id" },
     };
     res.status(200).json(jsonUrls);
 });
@@ -29,8 +30,13 @@ router.get('/all', async (_req, res) => {
     res.status(200).json(await FodaModel.getAll());
 });
 
-router.get('/byid/', async (req, res) => {
-    const { id } = req.query;
+router.get('/allByFoda/:fodaId', async (req, res) => {
+    const { fodaId } = req.params;
+    res.status(200).json(await FodaModel.getAllFodaEntrys(fodaId));
+});
+
+router.get('/byid/:id', async (req, res) => {
+    const { id } = req.params;
     const entidad = await FodaModel.getById(id);
     if (entidad) {
         return res.status(200).json(entidad);
@@ -38,26 +44,18 @@ router.get('/byid/', async (req, res) => {
     return res.status(404).json({ "error": "No se encontró la entidad" });
 });
 
-router.post('/new', async (req, res) => {    
+router.post('/new/:Foda', async (req, res) => {
+    const { Foda } = req.params;
     const {
-        Codigo= "1204",
-        empresa = "1504",
+        foda = Foda,
         descripcion = "descripcion",
-        tipo = "A",
-        categorias = {},
-        valoracion = 3,
-        observacion = "Mayor detalle",
-
+        tipo = "N",
     } = req.body;
     //TODO: Validar Entrada de datos
     const newFodaEntry: IFodaEntry = {
-        Codigo,
-        empresa,
+        foda,
         descripcion,
         tipo,
-        categorias,
-        valoracion,
-        observacion
     };
     if (await FodaModel.add(newFodaEntry)) {
         return res.status(200).json({ "created": true });
@@ -67,15 +65,12 @@ router.post('/new', async (req, res) => {
     );
 });
 
-router.put('/updType/', async (req, res) => {
-    const { id } = req.query;
+router.put('/updType/:id', async (req, res) => {
+    const { id } = req.params;
     const {
-        tipo = "----NotRecieved------",
+        tipo,
     } = req.body;
 
-    if (tipo === "----NotRecieved------") {
-        return res.status(403).json({ "error": `Debe venir el tipo correctos "F", "O", "D", "A"`  });
-    }
     const updateType: IFodaEntry = {
         tipo,
     };
@@ -94,8 +89,8 @@ router.put('/updType/', async (req, res) => {
         );
 });
 
-router.delete('/del/', async (req, res) => {
-    const { id } = req.query;
+router.delete('/del/:id', async (req, res) => {
+    const { id } = req.params;
     if (await FodaModel.delete(id)) {
         return res.status(200).json({ "deleted": true });
     }

@@ -24,8 +24,8 @@ router.post('/signin', async (req, res)=> {
 router.post('/signon', async (req, res)=>{
   try {
     const {email, password} = req.body;
-    const token = await users.loginUser(email, password);
-    return res.status(200).json({token});
+    const user = await users.loginUser(email, password);
+    return res.status(200).json(user);
   } catch (error) {
     console.error("/signin error", error);
     return res.status(400).json({error: "error al intentar iniciar sesión con el usuario"});

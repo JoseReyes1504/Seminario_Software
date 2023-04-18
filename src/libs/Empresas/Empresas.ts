@@ -6,17 +6,21 @@ export class Empresas {
   constructor(dao: IDataAccessObject) {
     this.dao = dao;
   }
-  getAll() {
-    return this.dao.findAll();
+  getAll(user: string) {
+    return this.dao.findByFilter({ "user": user });
   }
 
   getById(id: string) {
     return this.dao.findByID(id);
   }
   add(nuevaEmpresa: IEmpresa) {
+    const gpc = require('generate-pincode')
+    const pin = gpc(6)
     const date = new Date();
+
     const nueva: IEmpresa = {
       ...nuevaEmpresa,
+      codigo: pin,
       created: date,
       updated: date
     }
