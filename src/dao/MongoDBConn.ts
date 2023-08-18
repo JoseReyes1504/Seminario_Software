@@ -1,13 +1,12 @@
 import { IDBConnection } from "./IDBConnection";
 import { MongoClient } from 'mongodb';
 
-const mongoURI = process.env.MONGO_URI || 'mongodb://localhost:27017';
-const mongoDBName = process.env.MONGO_DB_NAME || 'sw202301';
+const mongoURI = 'mongodb+srv://TallerSoftware:TallerSoftware@tallersoftware.hudzq5l.mongodb.net/';
+const mongoDBName = 'SW2023';
 
 export class MongoDBConn implements IDBConnection {
   static connection:MongoClient = null;
-	private constructor(){}
-  //A hack because typescript can´t handle static methods in interfaces :(
+	private constructor(){}  
   getConnection(): Promise<any> {
     throw new Error("Method not implemented.");
   }
